@@ -129,20 +129,71 @@ class SortedArray
     # yield to each element
 
     # let's keep track of our index
+
+    i = 0
+    while i < @internal_arr.length
+      yield @internal_arr[i]
+      i += 1
+    end
+    @internal_arr
   end
 
   def each_with_index &block
+    i = 0
+    each do |item|
+      yield item, i
+      i += 1
+    end
   end
 
   def map &block
+    new_arr = []
+    each do |block|
+      result = yield block
+    new_arr << result
+    end
+    new_arr
   end
 
   def map! &block
+    i = 0
+    each do |block|
+      result = yield block
+      @internal_arr[i] = result
+      i += 1
+      end
   end
 
   def find &block
+    each do |block|
+        if yield block
+          return block
+        end
+    end
+    return nil
   end
 
+### Same thing below, but with a counter, i
+  # def find &block
+  #   i = 0
+  #   @internal_arr.each do |block|
+  #     if yield block
+  #       return @internal_arr[i]
+  #     end
+  #       i += 1
+  #   end
+  #   return nil
+  # end
+
   def inject acc=nil, &block
+    acc||=0                           # if acc == nil, set acc = 0.
+
+    each do |item|                    # for each item in the array, run the following block...
+      acc = yield acc, item  # accumulator = the yielded block (the one originally passed into inject), with parameters acc and "item" (think of it as each element in the array)
+    end   # end outer block
+    acc   # print accumulator
   end
+
+  #sorted_array.inject(5) { |acc, item| acc + item }
+
 end
